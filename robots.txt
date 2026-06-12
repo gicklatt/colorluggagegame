@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://gicklatt.github.io/colorluggagegame/sitemap.xml
