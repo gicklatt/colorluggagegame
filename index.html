@@ -1,306 +1,81 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Color Luggage — Sort Puzzle</title>
-  <meta name="description" content="Color Luggage is a bright sorting puzzle set in the world's happiest little airport. Tap carts, match colors, fill the plane — 200 candy-colored levels." />
-  <link rel="icon" type="image/png" href="assets/icon.png" />
-  <meta property="og:title" content="Color Luggage — Sort Puzzle" />
-  <meta property="og:description" content="Tap carts, match colors, catch your flight. 200 candy-colored levels of bag-sorting bliss." />
-  <meta property="og:image" content="assets/screenshots/01-hero.jpg" />
-  <meta property="og:type" content="website" />
-  <meta name="theme-color" content="#eef5f0" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <style>
-    :root {
-      --bg: #eef5f0;
-      --panel: #ffffff;
-      --line: rgba(42, 42, 58, 0.09);
-      --text: #2a2a3a;
-      --muted: #6e7388;
-      --faint: #a4a7b8;
-      --purple: #a07ad9;
-      --mint:   #57c3aa;
-      --yellow: #fbc855;
-      --pink:   #ff8fb1;
-      --blue:   #6cb6cf;
-      --ease: cubic-bezier(.22, 1, .36, 1);
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
-    body {
-      background: var(--bg); color: var(--text);
-      font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      line-height: 1.65;
-      -webkit-font-smoothing: antialiased;
-      overflow-x: hidden;
-    }
-    a { color: inherit; text-decoration: none; }
-    .wrap { max-width: 1040px; margin: 0 auto; padding: 0 26px; }
-    .rounded { font-family: "Fredoka", "Inter", -apple-system, sans-serif; font-weight: 600; }
-
-    body::before {
-      content: ""; position: fixed; inset: 0; z-index: -1;
-      background:
-        radial-gradient(680px 480px at 86% -4%, rgba(160, 122, 217, 0.14), transparent 70%),
-        radial-gradient(620px 460px at 4% 102%, rgba(108, 182, 207, 0.16), transparent 70%);
-    }
-
-    header {
-      position: sticky; top: 0; z-index: 50;
-      backdrop-filter: blur(14px);
-      background: rgba(238, 245, 240, 0.78);
-      border-bottom: 1px solid transparent;
-      transition: border-color .3s var(--ease);
-    }
-    header.scrolled { border-bottom-color: var(--line); }
-    .nav { display: flex; align-items: center; justify-content: space-between; height: 68px; }
-    .brand { display: flex; align-items: center; gap: 11px; }
-    .brand img {
-      width: 34px; height: 34px; border-radius: 9px;
-      box-shadow: 0 4px 12px -4px rgba(160, 122, 217, .55);
-    }
-    .brand .name { font-size: 16px; letter-spacing: -0.01em; }
-    .nav-links { display: flex; gap: 26px; font-size: 14px; color: var(--muted); }
-    .nav-links a { transition: color .2s var(--ease); }
-    .nav-links a:hover { color: var(--purple); }
-
-    .hero { text-align: center; padding: 96px 26px 64px; }
-    .hero .icon {
-      width: 132px; height: 132px; border-radius: 30px; margin-bottom: 28px;
-      box-shadow:
-        0 0 0 1px var(--line),
-        0 28px 60px -16px rgba(160, 122, 217, .42),
-        0 12px 28px -10px rgba(108, 182, 207, .35);
-    }
-    .hero h1 {
-      font-size: clamp(40px, 7vw, 72px);
-      line-height: 1.04; letter-spacing: -0.025em;
-      font-family: "Fredoka", -apple-system, sans-serif; font-weight: 600;
-    }
-    .hero h1 .accent { color: var(--purple); }
-    .hero .sub {
-      margin-top: 18px; font-size: 14px; letter-spacing: 0.18em;
-      text-transform: uppercase; color: var(--mint); font-weight: 600;
-    }
-    .hero p.lead {
-      color: var(--muted); font-size: 17.5px;
-      max-width: 56ch; margin: 18px auto 32px;
-    }
-    .badges { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
-    .badge {
-      display: inline-block; padding: 13px 24px; border-radius: 14px;
-      font-size: 14.5px; font-weight: 600;
-      background: var(--panel); border: 1px solid var(--line); color: var(--faint);
-      box-shadow: 0 2px 6px -2px rgba(42,42,58,.04);
-    }
-
-    .shots {
-      display: flex; gap: 16px; overflow-x: auto;
-      justify-content: safe center;
-      padding: 18px 26px 56px; scroll-snap-type: x mandatory;
-    }
-    .shots::-webkit-scrollbar { height: 0; }
-    .shots img {
-      height: 460px; border-radius: 22px;
-      border: 1px solid var(--line);
-      box-shadow:
-        0 24px 50px -20px rgba(42, 42, 58, .25),
-        0 6px 18px -8px rgba(42, 42, 58, .14);
-      scroll-snap-align: center; flex: 0 0 auto;
-      background: var(--panel);
-    }
-
-    section.block { padding: 56px 26px; }
-    section.block + section.block { border-top: 1px solid var(--line); }
-    .eyebrow {
-      font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase;
-      color: var(--mint); font-weight: 700;
-    }
-    section.block h2 {
-      font-size: clamp(24px, 3.6vw, 32px);
-      margin: 12px 0 30px; letter-spacing: -0.018em;
-      font-family: "Fredoka", -apple-system, sans-serif; font-weight: 600;
-    }
-
-    .features { display: grid; gap: 16px; }
-    @media (min-width: 640px) { .features { grid-template-columns: 1fr 1fr; } }
-    .feature {
-      background: var(--panel); border: 1px solid var(--line);
-      border-radius: 18px; padding: 26px;
-      transition: transform .25s var(--ease), box-shadow .25s var(--ease);
-      box-shadow: 0 2px 8px -3px rgba(42,42,58,.05);
-    }
-    .feature:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 16px 36px -16px rgba(42,42,58,.18);
-    }
-    .feature .pill {
-      display: inline-block; padding: 6px 12px; border-radius: 999px;
-      font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
-      font-weight: 700; color: white;
-    }
-    .feature h3 {
-      font-size: 19px; margin: 14px 0 6px;
-      font-family: "Fredoka", -apple-system, sans-serif; font-weight: 600;
-      letter-spacing: -0.01em;
-    }
-    .feature p { color: var(--muted); font-size: 15px; }
-
-    .steps { display: grid; gap: 16px; counter-reset: step; }
-    @media (min-width: 720px) { .steps { grid-template-columns: repeat(3, 1fr); } }
-    .step {
-      background: var(--panel); border: 1px solid var(--line);
-      border-radius: 18px; padding: 24px;
-      position: relative;
-      box-shadow: 0 2px 8px -3px rgba(42,42,58,.05);
-    }
-    .step::before {
-      counter-increment: step;
-      content: counter(step, decimal-leading-zero);
-      font-family: "Fredoka", sans-serif; font-weight: 600;
-      font-size: 30px; color: var(--purple);
-      display: block; margin-bottom: 8px;
-    }
-    .step h3 {
-      font-family: "Fredoka", sans-serif; font-weight: 600;
-      font-size: 17px; margin-bottom: 6px;
-    }
-    .step p { color: var(--muted); font-size: 14.5px; }
-
-    .stat-row {
-      display: flex; flex-wrap: wrap; gap: 12px; margin-top: 20px;
-    }
-    .chip {
-      font-size: 13px; padding: 7px 14px; border-radius: 999px;
-      background: var(--panel); border: 1px solid var(--line); color: var(--muted);
-    }
-    .chip strong { color: var(--text); }
-
-    footer {
-      border-top: 1px solid var(--line);
-      padding: 36px 26px 60px; text-align: center;
-      color: var(--muted); font-size: 14px;
-    }
-    footer a { color: var(--purple); }
-
-    @media (max-width: 640px) {
-      .nav-links { display: none; }
-      .hero { padding: 68px 26px 48px; }
-      .hero .icon { width: 112px; height: 112px; }
-      .shots img { height: 380px; }
-    }
-  </style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Luggage Jam: Color Sort — Official Game</title>
+  <meta name="description" content="Match colorful luggage, fill the carts and keep the airport carousel moving. Play Luggage Jam: Color Sort on iPhone, iPad and Android.">
+  <meta name="theme-color" content="#2152e0">
+  <link rel="canonical" href="https://gicklatt.github.io/colorluggagegame/">
+  <link rel="alternate" hreflang="en" href="https://gicklatt.github.io/colorluggagegame/">
+  <link rel="alternate" hreflang="tr" href="https://gicklatt.github.io/colorluggagegame/?lang=tr">
+  <link rel="icon" type="image/png" href="assets/icon.png">
+  <meta property="og:title" content="Luggage Jam: Color Sort">
+  <meta property="og:description" content="Every bag. The right cart. A colorful airport sorting puzzle by Gicklatt.">
+  <meta property="og:image" content="https://gicklatt.github.io/colorluggagegame/assets/share-en.png">
+  <meta property="og:url" content="https://gicklatt.github.io/colorluggagegame/">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="preload" href="assets/fonts/baloo-bold.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="assets/site.css">
+  <script src="assets/site.js" defer></script>
 </head>
 <body>
-  <header id="header">
-    <div class="wrap nav">
-      <a class="brand" href="/">
-        <img src="assets/icon.png" alt="Color Luggage icon" />
-        <span class="name rounded">Color Luggage</span>
-      </a>
-      <nav class="nav-links">
-        <a href="#features">Features</a>
-        <a href="#how">How it plays</a>
-        <a href="privacy/">Privacy</a>
-      </nav>
-    </div>
-  </header>
-
-  <main>
-    <section class="hero">
-      <img class="icon" src="assets/icon.png" alt="Color Luggage icon" />
-      <h1>Sort the bags. Fill the <span class="accent">planes.</span></h1>
-      <div class="sub">Tap carts, match the colors</div>
-      <p class="lead">
-        Color Luggage is a bright, candy-colored sorting puzzle set in
-        the world's happiest little airport. Roll carts up to the
-        docks, pull matching suitcases out of the towering pile, and
-        send cart after cart rolling to the runway.
-      </p>
-      <div class="badges">
-        <span class="badge">App Store &middot; coming soon</span>
-        <span class="badge">Google Play &middot; coming soon</span>
+  <a class="skip" href="#main" data-i18n="skip">Skip to content</a>
+  <header><div class="wrap nav">
+    <a class="brand" href="#main" aria-label="Luggage Jam home"><img src="assets/icon.png" width="44" height="44" alt=""><span>Luggage Jam<span class="brand-sub">COLOR SORT</span></span></a>
+    <nav aria-label="Main navigation"><a href="#how" data-i18n="navHow">How to play</a><a href="#gameplay" data-i18n="navVideo">Gameplay</a><a href="#support" data-i18n="navSupport">Support</a></nav>
+    <div class="languages" aria-label="Language"><button type="button" data-lang="en" aria-pressed="true">EN</button><button type="button" data-lang="tr" aria-pressed="false">TR</button></div>
+  </div></header>
+  <main id="main">
+    <section class="hero wrap" aria-labelledby="title">
+      <div class="hero-copy">
+        <p class="eyebrow" data-i18n="heroEyebrow">A colorful airport puzzle</p>
+        <h1 id="title"><img class="wordmark" src="assets/wordmark.svg" width="1200" height="570" alt="Luggage Jam"><span class="sr-only">: Color Sort</span></h1>
+        <h2 class="hero-line"><span data-i18n="heroLine1">Every bag.</span><br><span data-i18n="heroLine2">The right cart.</span></h2>
+        <p class="lead" data-i18n="heroBody">Tap a cart. Match the colors. Watch the luggage hop aboard and roll away. A little planning makes every departure feel good.</p>
+        <div class="store-links">
+          <a class="store apple" href="https://apps.apple.com/app/id6778817570"><span class="store-top" data-i18n="appleTop">Download on the</span><strong>App Store</strong><span class="store-arrow" aria-hidden="true">↗</span></a>
+          <a class="store play" href="https://play.google.com/store/apps/details?id=com.gicklatt.colorluggage"><span class="store-top" data-i18n="playTop">Get it on</span><strong>Google Play</strong><span class="store-arrow" aria-hidden="true">↗</span></a>
+        </div>
+        <p class="small-note" data-i18n="free">Free to play · Contains ads</p>
+        <a class="watch-link" href="#gameplay"><span class="play-dot" aria-hidden="true">▶</span><span data-i18n="watch">Watch real gameplay</span></a>
+      </div>
+      <div class="hero-scene"><div class="scene-orbit" aria-hidden="true"></div>
+        <figure class="game-frame"><img src="assets/game/01-match.webp" width="720" height="1280" alt="Colorful suitcases riding the carousel toward matching luggage carts" data-alt="heroAlt" fetchpriority="high"><figcaption data-i18n="actual">Captured from the game</figcaption></figure>
+        <img class="hero-bags" src="assets/luggage-hero.webp" width="600" height="500" alt="" aria-hidden="true">
       </div>
     </section>
-
-    <div class="shots">
-      <img src="assets/screenshots/01-hero.jpg" alt="Color Luggage hero" />
-      <img src="assets/screenshots/02-mechanic.jpg" alt="Tap and match mechanic" />
-      <img src="assets/screenshots/03-jam.jpg" alt="Don't jam the docks" />
-      <img src="assets/screenshots/04-clear.jpg" alt="Clear the terminal" />
-      <img src="assets/screenshots/05-rewards.jpg" alt="Stars and gift chest" />
-      <img src="assets/screenshots/06-brand.jpg" alt="Boarding pass" />
-    </div>
-
-    <section id="features" class="block wrap">
-      <div class="eyebrow">Inside the terminal</div>
-      <h2>Easy to pick up, tricky to put down</h2>
-      <div class="features">
-        <div class="feature">
-          <span class="pill" style="background:var(--purple);">200 levels</span>
-          <h3>From warm-ups to brain-benders</h3>
-          <p>Gentle two-color starts, six-color stand-offs, and hard stops along the way with tighter docks and trickier shuffles.</p>
-        </div>
-        <div class="feature">
-          <span class="pill" style="background:var(--mint);">Boosters</span>
-          <h3>Fly Out and Shuffle</h3>
-          <p>Two tools for tight corners — eject a stuck cart, or shuffle the pile to find the color you need.</p>
-        </div>
-        <div class="feature">
-          <span class="pill" style="background:var(--yellow); color:#2a2a3a;">Rewards</span>
-          <h3>Stars, gifts, takeoffs</h3>
-          <p>Up to three stars per level, a gift chest that fills as you play, boarding-pass win tickets and confetti runway takeoffs.</p>
-        </div>
-        <div class="feature">
-          <span class="pill" style="background:var(--blue);">One finger</span>
-          <h3>Cozy, clutter-free play</h3>
-          <p>Tap a cart, watch it roll. Soft, pure-candy art with no menus to fight, no timers to beat — just the next boarding pass.</p>
-        </div>
+    <section class="how" id="how" aria-labelledby="howTitle"><div class="wrap">
+      <div class="section-intro"><p class="eyebrow" data-i18n="howEyebrow">One finger. A little foresight.</p><h2 id="howTitle" data-i18n="howTitle">A good trip starts with a good match.</h2></div>
+      <ol class="steps">
+        <li><span class="step-number">01</span><h3 data-i18n="step1Title">Choose your cart</h3><p data-i18n="step1Body">Tap a front cart to send it to an open loading bay. Keep an eye on which colors are coming.</p></li>
+        <li><span class="step-number">02</span><h3 data-i18n="step2Title">Let the colors meet</h3><p data-i18n="step2Body">Matching bags ride the carousel and load automatically. Enjoy the hop, click and satisfying fit.</p></li>
+        <li><span class="step-number">03</span><h3 data-i18n="step3Title">Fill it. Roll away.</h3><p data-i18n="step3Body">Full carts depart and free up a bay. Plan your next move and clear the busy terminal.</p></li>
+      </ol>
+    </div></section>
+    <section class="gameplay wrap" id="gameplay" aria-labelledby="videoTitle">
+      <div class="video-shell"><video id="gameVideo" controls playsinline preload="none" poster="assets/gameplay-poster.webp" width="886" height="1920" aria-label="Luggage Jam actual gameplay"><source id="gameVideoSource" src="assets/video/gameplay-en.mp4" type="video/mp4"></video></div>
+      <div class="video-copy"><p class="eyebrow" data-i18n="videoEyebrow">The carousel is calling</p><h2 id="videoTitle"><span data-i18n="videoLine1">Watch it flow.</span><br><span data-i18n="videoLine2">Make your move.</span></h2><p class="lead" data-i18n="videoBody">Curved belts, colorful luggage and carts that load and leave. This is real play, from the first match to a cleared terminal.</p><a id="youtubeLink" class="text-link" href="https://www.youtube.com/watch?v=rU8fczWaknM" data-i18n="youtube">Also watch on YouTube ↗</a>
+        <div class="feature-notes"><p><strong data-i18n="feature1Title">A fresh route</strong><span data-i18n="feature1Body">Changing carousel layouts keep your next trip interesting.</span></p><p><strong data-i18n="feature2Title">Room to think</strong><span data-i18n="feature2Body">Mixed colors, linked carts and limited bays add a clever twist.</span></p><p><strong data-i18n="feature3Title">Your kind of play</strong><span data-i18n="feature3Body">Daily trips, luggage styles and adjustable music, sound and motion.</span></p></div>
       </div>
     </section>
-
-    <section id="how" class="block wrap">
-      <div class="eyebrow">How it plays</div>
-      <h2>Three taps to a takeoff</h2>
-      <div class="steps">
-        <div class="step">
-          <h3>Tap a cart</h3>
-          <p>Roll an empty cart up to a dock. Three matching suitcases will ride the belt and pack themselves on board.</p>
-        </div>
-        <div class="step">
-          <h3>Match the colors</h3>
-          <p>Pull suitcases from the towering pile. Every cart you fill is one less dock you can use — think two carts ahead.</p>
-        </div>
-        <div class="step">
-          <h3>Catch the flight</h3>
-          <p>Clear the terminal and the plane takes off in a shower of confetti. Your boarding pass is waiting.</p>
-        </div>
+    <section class="gallery-section" aria-labelledby="galleryTitle">
+      <div class="wrap gallery-heading"><div><p class="eyebrow" data-i18n="galleryEyebrow">Take a closer look</p><h2 id="galleryTitle" data-i18n="galleryTitle">A terminal full of color.</h2></div><div class="gallery-controls"><button type="button" id="galleryPrev" aria-label="Previous screenshot">←</button><button type="button" id="galleryNext" aria-label="Next screenshot">→</button></div></div>
+      <div class="gallery wrap" id="gallery" tabindex="0" aria-label="Game screenshots">
+        <figure><img src="assets/game/02-carousel.webp" width="720" height="1280" loading="lazy" alt="A winding luggage carousel" data-alt="gallery1Alt"><figcaption data-i18n="gallery1">Keep the carousel moving</figcaption></figure>
+        <figure><img src="assets/game/03-trolleys.webp" width="720" height="1280" loading="lazy" alt="Different luggage cart types at the loading bays" data-alt="gallery2Alt"><figcaption data-i18n="gallery2">A cart for every color</figcaption></figure>
+        <figure><img src="assets/game/04-plan.webp" width="720" height="1280" loading="lazy" alt="A puzzle with limited luggage loading bays" data-alt="gallery3Alt"><figcaption data-i18n="gallery3">Leave room for your next move</figcaption></figure>
+        <figure><img src="assets/game/05-home.webp" width="720" height="1280" loading="lazy" alt="The game’s colorful airport home screen" data-alt="gallery4Alt"><figcaption data-i18n="gallery4">Your next colorful trip</figcaption></figure>
+        <figure><img src="assets/game/06-celebrate.webp" width="720" height="1280" loading="lazy" alt="A completed puzzle celebration" data-alt="gallery5Alt"><figcaption data-i18n="gallery5">Enjoy every happy finish</figcaption></figure>
       </div>
-      <div class="stat-row">
-        <span class="chip"><strong>200</strong> &nbsp;levels</span>
-        <span class="chip"><strong>2</strong> &nbsp;boosters</span>
-        <span class="chip"><strong>★★★</strong> &nbsp;ranks per level</span>
-        <span class="chip">Plays offline</span>
-      </div>
+    </section>
+    <section class="support wrap" id="support" aria-labelledby="supportTitle">
+      <img src="assets/icon.png" width="92" height="92" loading="lazy" alt="Luggage Jam icon">
+      <div><p class="eyebrow">GICKLATT</p><h2 id="supportTitle" data-i18n="supportTitle">Need a hand with your luggage?</h2><p data-i18n="supportBody">For game help, feedback or a privacy question, get in touch.</p><a class="text-link" href="mailto:gicklatt@gmail.com">gicklatt@gmail.com ↗</a></div>
+      <div class="support-meta"><p data-i18n="offline">The core puzzle works offline. Ads need an internet connection.</p><a href="privacy/" data-i18n="privacy">Privacy policy ↗</a></div>
     </section>
   </main>
-
-  <footer>
-    &copy; <span id="year"></span> Gicklatt &middot;
-    <a href="privacy/">Privacy Policy</a> &middot;
-    <a href="mailto:gicklatt@gmail.com">gicklatt@gmail.com</a>
-  </footer>
-
-  <script>
-    document.getElementById("year").textContent = new Date().getFullYear();
-    var header = document.getElementById("header");
-    var onScroll = function () { header.classList.toggle("scrolled", window.scrollY > 8); };
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-  </script>
+  <footer><div class="wrap"><p>© 2026 Gicklatt · Luggage Jam: Color Sort</p><a href="privacy/" data-i18n="privacy">Privacy policy ↗</a></div></footer>
 </body>
 </html>
